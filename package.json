@@ -5,7 +5,14 @@
   "description": "[![Actions Status](https://github.com/Rodion94/frontend-project-lvl2/workflows/hexlet-check/badge.svg)](https://github.com/Rodion94/frontend-project-lvl2/actions)",
   "main": "bin/gendiff.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "build": "NODE_ENV=production babel src --out-dir dist --source-maps inline",
+    "prepublishOnly": "npm run build",
+    "eslint": "eslint --ignore-path.gitignore."
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {}
   },
   "bin": {
     "gendiff": "bin/gendiff.js"
@@ -23,6 +30,7 @@
   "dependencies": {
     "@hexlet/immutable-fs-trees": "^0.7.1",
     "commander": "^8.3.0",
+    "expect.js": "^0.3.1",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21"
   },
@@ -30,7 +38,8 @@
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.0",
+    "eslint-plugin-jest": "^24.2.1",
     "eslint-plugin-json-format": "^2.0.1",
-    "jest": "^27.0.6"
+    "jest": "^27.4.5"
   }
 }
