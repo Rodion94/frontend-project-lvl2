@@ -1,40 +1,42 @@
 import _ from 'lodash';
 
-const valueToString = (value) => {
-  if (_.isObject(value)) {
+const stringify = (value) => {
+  if (_.isPlainObject(value)) {
     return '[complex value]';
   }
-  if (typeof value === 'string') {
-    return `'${value}'`;
-  }
-  return `${value}`;
+
+  return _.isString(value) ? `'${value}'` : value;
 };
 
-/* converting data to plain format */
-const renderPlain = (difference) => {
-  const iter = (data, name = []) => {
-    const dataFiltered = data.filter(({ type }) => type !== 'identical');
-    const result = dataFiltered.map((elem) => {
-      const names = [...name, elem.name];
-      const { type, value } = elem;
-      switch (type) {
-        case 'added':
-          return `Property '${names.join('.')}' was added with value: ${valueToString(value)}`;
-        case 'deleted':
-          return `Property '${names.join('.')}' was removed`;
-        case 'changed': {
-          const { valueBefore, valueAfter } = elem;
-          return `Property '${names.join('.')}' was updated. From ${valueToString(valueBefore)} to ${valueToString(valueAfter)}`;
-        }
-        case 'nested':
-          return iter(elem.children, names);
-        default:
-          throw new Error(`Unknown node type: ${type}`);
-      }
-    });
-    return result.join('\n');
+const render = (nodes) => {
+  const iter = (node, nameKey) => {
+    const {
+      key, type, children, oldValue, newValue,
+    } = node;
+
+    const currentKey = `${nameKey}${key}`;
+    switch (type) {
+      case 'nested':
+        return children.map((child) => iter(child, `${currentKey}.`)).join('');
+      case 'unchanged':
+        return '';
+      case 'changed':
+        return `Property '${currentKey}' was updated. From ${stringify(oldValue)} to ${stringify(newValue)}\n`;
+      case 'added':
+        return `Property '${currentKey}' was added with value: ${stringify(newValue)}\n`;
+      case 'removed':
+        return `Property '${currentKey}' was removed\n`;
+      default:
+        throw new Error(`unexpected type ${type}`);
+    }
   };
-  return iter(difference);
+
+  return iter(nodes, '');
 };
 
-export default renderPlain;
+const plain = (nodes) => {
+  const lines = nodes.map((node) => render(node));
+  return lines.join('').trim();
+};
+
+export default plain;

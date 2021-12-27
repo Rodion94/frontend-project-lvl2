@@ -1,2 +1,1 @@
-/* converting data to JSON format */
-export default (diff) => JSON.stringify(diff);
+export default (nodes) => JSON.stringify(nodes, null, 2);

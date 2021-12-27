@@ -2,18 +2,15 @@ import stylish from './stylish.js';
 import plain from './plain.js';
 import json from './json.js';
 
-/* the function returns the result in a required format. */
-const formatting = (format, difference) => {
-  switch (format) {
+const formatter = (data, outputFormat = 'stylish') => {
+  switch (outputFormat) {
     case 'json':
-      return json(difference);
+      return json(data);
     case 'plain':
-      return plain(difference);
-    case 'stylish':
-      return stylish(difference);
+      return plain(data);
     default:
-      throw new Error(`Unknown format ${format}. Use json, plain or stylish (default)`);
+      return stylish(data);
   }
 };
 
-export default formatting;
+export default formatter;

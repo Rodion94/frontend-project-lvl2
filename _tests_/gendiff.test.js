@@ -1,30 +1,30 @@
-import path from 'path';
-import fs from 'fs';
+import { test, expect, describe } from '@jest/globals';
 import { fileURLToPath } from 'url';
-import genDiff from '../src/gendiff.js';
-import {expect} from 'expect'
+import fs from 'fs';
+import path from 'path';
+import genDiff from '../src/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const getFixturePath = (filename) => path.join(__dirname, 'src', '..', '__fixtures__', filename);
+const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
+const readFixtureFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8').trim();
 
-const file1Json = getFixturePath('file1.json');
-const file2Json = getFixturePath('file2.json');
-const file1Yml = getFixturePath('file1.yml');
-const file2Yml = getFixturePath('file2.yml');
-const diffStylish = fs.readFileSync(getFixturePath('result_stylish.txt'), 'utf8');
-const diffPlain = fs.readFileSync(getFixturePath('result_plain.txt'), 'utf8');
-const diffJson = fs.readFileSync(getFixturePath('result_json.txt'), 'utf8');
+const cases = [
+  ['json', 'stylish'],
+  ['yml', 'stylish'],
+  ['json', 'plain'],
+  ['yml', 'plain'],
+  ['json', 'json'],
+  ['yml', 'json'],
+];
 
-// eslint-disable-next-line no-undef
-test.each([
-  ['diffJsonToStylish', file1Json, file2Json, diffStylish, 'stylish'],
-  ['diffYmlToStylish', file1Yml, file2Yml, diffStylish, 'stylish'],
-  ['diffJsonToPlain', file1Json, file2Json, diffPlain, 'plain'],
-  ['diffYmlToPlain', file1Yml, file2Yml, diffPlain, 'plain'],
-  ['diffJsonToJson', file1Json, file2Json, diffJson, 'json'],
-  ['diffYmlToJson', file1Yml, file2Yml, diffJson, 'json'],
-])('%s', (name, a, b, expected, format) => {
-  expect(genDiff(a, b, format)).toBe(expected);
+describe.each(cases)('genDiff', (extention, format) => {
+  test(`${format} object`, () => {
+    const expected = readFixtureFile(`${format}.txt`);
+    const first = getFixturePath(`file1.${extention}`);
+    const second = getFixturePath(`file2.${extention}`);
+    const actual = genDiff(first, second, format);
+    expect(actual).toEqual(expected);
+  });
 });

@@ -8,5 +8,8 @@ Maintainability Badge
 Comparison №1
   https://asciinema.org/a/a5KrJSJB0sbGojWTrj8GRtBcc
 
-  Comparison №2
-   https://asciinema.org/a/0qpF3GFWkBSWLgOSIgkjan3Lw
+Comparison №2
+  https://asciinema.org/a/0qpF3GFWkBSWLgOSIgkjan3Lw
+
+Comparison №3
+  https://asciinema.org/a/9ski7t156XKaGIECzpdZaSZaB
