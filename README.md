@@ -16,3 +16,6 @@ Comparison №3
 
 Comparison №4
    https://asciinema.org/a/yMOfO2INpOkbVvnuqpfigWaa4
+
+Comparison №5
+   https://asciinema.org/a/HvQpmJFabQOg3MxWv7wkZFacq
