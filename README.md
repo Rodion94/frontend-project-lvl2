@@ -5,6 +5,10 @@ Maintainability Badge
 
 <a href="https://codeclimate.com/github/Rodion94/frontend-project-lvl2/maintainability"><img src="https://api.codeclimate.com/v1/badges/b14662b828f5193e0d36/maintainability" /></a>
 
+Test Coverage Badge
+
+<a href="https://codeclimate.com/github/Rodion94/frontend-project-lvl2/test_coverage"><img src="https://api.codeclimate.com/v1/badges/b14662b828f5193e0d36/test_coverage" /></a>
+
 <strong>Установка</strong>
 
 <br>1.Установите Node.js последней версии в систему глобально (Установка JavaScript). Для получения этой версии можно использовать диспетчер пакетов apt. Обновите указатель локальных пакетов с помощью следующей команды<br>
