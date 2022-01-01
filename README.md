@@ -5,27 +5,28 @@ Maintainability Badge
 
 <a href="https://codeclimate.com/github/Rodion94/frontend-project-lvl2/maintainability"><img src="https://api.codeclimate.com/v1/badges/b14662b828f5193e0d36/maintainability" /></a>
 
-Установка
-Установите Node.js последней версии в систему глобально (Установка JavaScript). Для получения этой версии можно использовать диспетчер пакетов apt. Обновите указатель локальных пакетов с помощью следующей команды
-sudo apt update
+<strong>Установка</strong>
 
-sudo apt install nodejs
+<br>1.Установите Node.js последней версии в систему глобально (Установка JavaScript). Для получения этой версии можно использовать диспетчер пакетов apt. Обновите указатель локальных пакетов с помощью следующей команды<br>
+sudo apt update<br>
 
-Проверьте, что установка выполнена успешно, запросив у node номер версии:
+sudo apt install nodejs<br>
 
-nodejs -v
+Проверьте, что установка выполнена успешно, запросив у node номер версии:<br>
 
-установите пакет npm с помощью apt:
+nodejs -v<br>
 
-sudo apt install npm
+2.Установите пакет npm с помощью apt:<br>
 
-Склонируйте созданный репозиторий проекта локально.
-git clone git@github.com:Rodion94/frontend-project-lvl2.git
+sudo apt install npm<br>
 
-Выполнить установку зависимостей
-make install
+3.Склонируйте созданный репозиторий проекта локально.<br>
+git clone git@github.com:Rodion94/frontend-project-lvl2.git<br>
 
-Запустить сравнение файлов
+4.Выполнить установку зависимостей<br>
+make install<br>
+
+5.Запустить сравнение файлов<br>
 gendiff <filepath1> <filepath2>
 
 Comparison №1
