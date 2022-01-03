@@ -1,8 +1,8 @@
-import yaml from 'js-yaml';
+import yml from 'js-yml';
 
 const parsersTree = {
   json: JSON.parse,
-  yml: yaml.load,
+  yml: yml.load,
 };
 
 export default (data, dataType) => {
