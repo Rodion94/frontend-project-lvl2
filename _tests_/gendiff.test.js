@@ -12,11 +12,11 @@ const readFixtureFile = (filename) => fs.readFileSync(getFixturePath(filename), 
 
 const cases = [
   ['json', 'stylish'],
-  ['yaml', 'stylish'],
+  ['yml', 'stylish'],
   ['json', 'plain'],
-  ['yaml', 'plain'],
+  ['yml', 'plain'],
   ['json', 'json'],
-  ['yaml', 'json'],
+  ['yml', 'json'],
 ];
 
 describe.each(cases)('genDiff', (extention, format) => {
