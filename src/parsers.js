@@ -1,11 +1,14 @@
 import yaml from 'js-yaml';
 
-const parsersTree = {
-  json: JSON.parse,
-  yml: yaml.load,
+const parser = (data, format) => {
+  switch (format) {
+    case 'json':
+      return JSON.parse(data);
+    case 'yml':
+      return yaml.load(data);
+    default:
+      return new Error(`Wrong input format: '${format}'`);
+  }
 };
 
-export default (data, dataType) => {
-  const parse = parsersTree[dataType];
-  return parse(data);
-};
+export default parser;

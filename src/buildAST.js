@@ -5,11 +5,11 @@ const buildAST = (data1, data2) => {
   const treeAST = _.sortBy(keys).map((key) => {
     const value1 = data1[key];
     const value2 = data2[key];
-    if (_.isPlainObject(value1) && _.isPlainObject(value2)) {
+    if (!_.has(data1, key)) {
       return {
-        type: 'nested',
+        type: 'added',
         key,
-        children: buildAST(value1, value2),
+        newValue: value2,
       };
     }
     if (!_.has(data2, key)) {
@@ -19,19 +19,11 @@ const buildAST = (data1, data2) => {
         oldValue: value1,
       };
     }
-    if (!_.has(data1, key)) {
+    if (_.isPlainObject(value1) && _.isPlainObject(value2)) {
       return {
-        type: 'added',
+        type: 'nested',
         key,
-        newValue: value2,
-      };
-    }
-    if (_.has(data1, key) && _.has(data2, key) && (value1 !== value2)) {
-      return {
-        type: 'changed',
-        key,
-        oldValue: value1,
-        newValue: value2,
+        children: buildAST(value1, value2),
       };
     }
     return {
