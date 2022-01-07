@@ -26,6 +26,14 @@ const buildAST = (data1, data2) => {
         children: buildAST(value1, value2),
       };
     }
+    if (value1 !== value2) {
+      return {
+        type: 'changed',
+        key,
+        oldValue: value1,
+        newValue: value2,
+      };
+    } 
     return {
       type: 'unchanged',
       key,
