@@ -9,23 +9,49 @@ const stringify = (value) => {
 };
 
 const render = (nodes) => {
+
+  const renderNested = (node, currentKey) => {
+    const {
+      children,
+    } = node;
+    return children.map((child) => iter(child, `${currentKey}.`)).join('');
+  };
+  
+  const renderChanged = (node, currentKey) => {
+    const {
+      oldValue, newValue,
+    } = node;
+    return `Property '${currentKey}' was updated. From ${stringify(oldValue)} to ${stringify(newValue)}\n`;
+  };
+
+  const renderAdded = (node, currentKey) => {
+    const {
+      newValue,
+    } = node;
+    return `Property '${currentKey}' was added with value: ${stringify(newValue)}\n`;
+  };
+
+  const renderRemoved = (currentKey) => {
+    return `Property '${currentKey}' was removed\n`;
+  };
+
   const iter = (node, nameKey) => {
     const {
-      key, type, children, oldValue, newValue,
+      key, type,
     } = node;
 
     const currentKey = `${nameKey}${key}`;
     switch (type) {
       case 'nested':
-        return children.map((child) => iter(child, `${currentKey}.`)).join('');
+        return renderNested(node, currentKey);
       case 'unchanged':
         return '';
       case 'changed':
-        return `Property '${currentKey}' was updated. From ${stringify(oldValue)} to ${stringify(newValue)}\n`;
+        return renderChanged(node, currentKey);
       case 'added':
-        return `Property '${currentKey}' was added with value: ${stringify(newValue)}\n`;
+        return renderAdded(node, currentKey);
       case 'removed':
-        return `Property '${currentKey}' was removed\n`;
+        return renderRemoved(currentKey);
       default:
         throw new Error(`unexpected type ${type}`);
     }
