@@ -9,12 +9,15 @@ const stringify = (value) => {
 };
 
 const render = (nodes) => {
-
+  const iter = (node, nameKey) => {
+    const {
+      key, type,
+    } = node;
   const renderNested = (node, currentKey) => {
     const {
       children,
     } = node;
-    return children.map((child) => iter(child, `${currentKey}.`)).join('');
+  return children.map((child) => iter(child, `${currentKey}.`)).join('');
   };
   
   const renderChanged = (node, currentKey) => {
@@ -34,12 +37,6 @@ const render = (nodes) => {
   const renderRemoved = (currentKey) => {
     return `Property '${currentKey}' was removed\n`;
   };
-
-  const iter = (node, nameKey) => {
-    const {
-      key, type,
-    } = node;
-
     const currentKey = `${nameKey}${key}`;
     switch (type) {
       case 'nested':

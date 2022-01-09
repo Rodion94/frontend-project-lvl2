@@ -33,7 +33,7 @@ const buildAST = (data1, data2) => {
         oldValue: value1,
         newValue: value2,
       };
-    } 
+    }
     return {
       type: 'unchanged',
       key,

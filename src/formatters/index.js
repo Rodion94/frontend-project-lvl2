@@ -4,7 +4,7 @@ import json from './json.js';
 
 const formatter = (data, outputFormat) => {
   switch (outputFormat) {
-    case 'stylish' :
+    case 'stylish':
       return stylish(data);
     case 'json':
       return json(data);
