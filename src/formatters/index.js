@@ -11,7 +11,7 @@ const formatter = (data, outputFormat) => {
     case 'plain':
       return plain(data);
     default:
-      throw new Error(`Формат не поддерживается: ${outputFormat}`);
+      throw new Error(`The format is not supported: ${outputFormat}`);
   }
 };
 

@@ -2,7 +2,7 @@
   "name": "@hexlet/code",
   "type": "module",
   "version": "1.0.0",
-  "description": "[![Actions Status](https://github.com/Rodion94/frontend-project-lvl2/workflows/hexlet-check/badge.svg)](https://github.com/Rodion94/frontend-project-lvl2/actions)",
+  "description": "Difference calculator - the programm that shows difference between two data structures",
   "main": "src/index.js",
   "scripts": {
     "test": "jest",
