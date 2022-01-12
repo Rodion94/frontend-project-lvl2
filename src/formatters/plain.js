@@ -8,57 +8,53 @@ const stringify = (value) => {
   return _.isString(value) ? `'${value}'` : value;
 };
 
-const render = (nodes) => {
-  const renderNested = (node, currentKey) => {
+const renderFuncs = {
+  nested:(node, currentKey) => {
     const {
       children,
     } = node;
-    return children.map((child) => iter(child, `${currentKey}.`)).join('');
-  };
+    return children.map((child) => renderIter(child, `${currentKey}.`)).join('');
+  },
   
-  const renderChanged = (node, currentKey) => {
+  // eslint-disable-next-line no-unused-vars
+  unchanged:(_node, _currentKey) => {
+    return '';
+  },
+  changed:(node, currentKey) => {
     const {
       oldValue, newValue,
     } = node;
     return `Property '${currentKey}' was updated. From ${stringify(oldValue)} to ${stringify(newValue)}\n`;
-  };
-
-  const renderAdded = (node, currentKey) => {
+  },
+  added:(node, currentKey) => {
     const {
       newValue,
     } = node;
     return `Property '${currentKey}' was added with value: ${stringify(newValue)}\n`;
-  };
-
-  const renderRemoved = (currentKey) => {
+  },
+  removed:(_node, currentKey) => {
     return `Property '${currentKey}' was removed\n`;
-  };
-
-  const iter = (node, nameKey) => {
-    const {
-      key, type,
-    } = node;
-
-    const currentKey = `${nameKey}${key}`;
-    switch (type) {
-      case 'nested':
-        return renderNested(node, currentKey);
-      case 'unchanged':
-        return '';
-      case 'changed':
-        return renderChanged(node, currentKey);
-      case 'added':
-        return renderAdded(node, currentKey);
-      case 'removed':
-        return renderRemoved(currentKey);
-      default:
-        throw new Error(`unexpected type ${type}`);
-    }
-  };
-
-  return iter(nodes, '');
+  },
 };
 
+const renderIter = (node, nameKey) => {
+  const {
+    key, type,
+  } = node;
+
+  const currentKey = `${nameKey}${key}`;
+  const renderFunc = renderFuncs[type];
+  if(typeof renderFunc === 'undefined') {
+    throw new Error(`unexpected type ${type}`);
+  }
+  return renderFunc(node, currentKey);   
+}; 
+
+
+const render = (nodes) => {
+  return renderIter(nodes, '');
+};
+  
 const plain = (nodes) => {
   const lines = nodes.map((node) => render(node));
   return lines.join('').trim();
