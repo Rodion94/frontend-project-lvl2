@@ -15,29 +15,52 @@ const stringify = (value, depth) => {
   return `{\n${result.join('')}${getIndent(depth - 1)}  }`;
 };
 
-const render = (nodes) => {
-  const iter = (node, depth = 1) => {
+const renderFuncs = {
+  nested:(node, depth) => {
     const {
-      key, type, children, oldValue, newValue,
+      key, children
     } = node;
+  return `\n${getIndent(depth)}  ${key}: {${children.map((child) => renderIter(child, depth + 1)).join('')}\n${getIndent(depth)}  }`;
+  },
+  unchanged:(node, depth) => {
+     const {
+      key, oldValue
+    } = node;
+  return `\n${getIndent(depth)}  ${key}: ${stringify(oldValue, depth + 1)}`;
+  },
+  changed:(node, depth) => {
+      const {
+      key, oldValue, newValue
+    } = node;
+  return `\n${getIndent(depth)}- ${key}: ${stringify(oldValue, depth + 1)}\n${getIndent(depth)}+ ${key}: ${stringify(newValue, depth + 1)}`;
+  },
+  added:(node, depth) => {
+     const {
+      key, newValue
+    } = node;
+  return `\n${getIndent(depth)}+ ${key}: ${stringify(newValue, depth + 1)}`;
+  },
+  removed:(node, depth) => {
+      const {
+      key, oldValue
+    } = node;
+   return `\n${getIndent(depth)}- ${key}: ${stringify(oldValue, depth + 1)}`;
+  },
+};
 
-    switch (type) {
-      case 'nested':
-        return `\n${getIndent(depth)}  ${key}: {${children.map((child) => iter(child, depth + 1)).join('')}\n${getIndent(depth)}  }`;
-      case 'unchanged':
-        return `\n${getIndent(depth)}  ${key}: ${stringify(oldValue, depth + 1)}`;
-      case 'changed':
-        return `\n${getIndent(depth)}- ${key}: ${stringify(oldValue, depth + 1)}\n${getIndent(depth)}+ ${key}: ${stringify(newValue, depth + 1)}`;
-      case 'added':
-        return `\n${getIndent(depth)}+ ${key}: ${stringify(newValue, depth + 1)}`;
-      case 'removed':
-        return `\n${getIndent(depth)}- ${key}: ${stringify(oldValue, depth + 1)}`;
-      default:
-        throw new Error(`unexpected type ${type}`);
-    }
-  };
+const renderIter = (node, depth = 1) => {
+  const {
+    type,
+  } = node;
+  const renderFunc = renderFuncs[type];
+  if(typeof renderFunc === 'undefined') {
+    throw new Error(`unexpected type ${type}`);
+  }
+  return renderFunc(node, depth);   
+}; 
 
-  return iter(nodes);
+const render = (nodes) => {
+  return renderIter(nodes);
 };
 
 const stylish = (nodes) => {
