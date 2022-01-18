@@ -15,49 +15,31 @@ const stringify = (value, depth) => {
   return `{\n${result.join('')}${getIndent(depth - 1)}  }`;
 };
 
-const renderFuncs = {
-  nested:(node, depth) => {
-    const {
-      key, children
-    } = node;
-  return `\n${getIndent(depth)}  ${key}: {${children.map((child) => renderIter(child, depth + 1)).join('')}\n${getIndent(depth)}  }`;
-  },
-  unchanged:(node, depth) => {
-     const {
-      key, oldValue
-    } = node;
-  return `\n${getIndent(depth)}  ${key}: ${stringify(oldValue, depth + 1)}`;
-  },
-  changed:(node, depth) => {
-      const {
-      key, oldValue, newValue
-    } = node;
-  return `\n${getIndent(depth)}- ${key}: ${stringify(oldValue, depth + 1)}\n${getIndent(depth)}+ ${key}: ${stringify(newValue, depth + 1)}`;
-  },
-  added:(node, depth) => {
-     const {
-      key, newValue
-    } = node;
-  return `\n${getIndent(depth)}+ ${key}: ${stringify(newValue, depth + 1)}`;
-  },
-  removed:(node, depth) => {
-      const {
-      key, oldValue
-    } = node;
-   return `\n${getIndent(depth)}- ${key}: ${stringify(oldValue, depth + 1)}`;
-  },
-};
-
 const renderIter = (node, depth = 1) => {
-  const {
-    type,
-  } = node;
-  const renderFunc = renderFuncs[type];
+  const renderFunc = renderFuncs[node.type];
   if(typeof renderFunc === 'undefined') {
-    throw new Error(`unexpected type ${type}`);
+    throw new Error(`unexpected type ${node.type}`);
   }
   return renderFunc(node, depth);   
 }; 
+
+const renderFuncs = {
+  nested:(node, depth) => {
+  return `\n${getIndent(depth)}  ${node.key}: {${node.children.map((child) => renderIter(child, depth + 1)).join('')}\n${getIndent(depth)}  }`;
+  },
+  unchanged:(node, depth) => {
+  return `\n${getIndent(depth)}  ${node.key}: ${stringify(node.oldValue, depth + 1)}`;
+  },
+  changed:(node, depth) => {
+  return `\n${getIndent(depth)}- ${node.key}: ${stringify(node.oldValue, depth + 1)}\n${getIndent(depth)}+ ${node.key}: ${stringify(node.newValue, depth + 1)}`;
+  },
+  added:(node, depth) => {
+  return `\n${getIndent(depth)}+ ${node.key}: ${stringify(node.newValue, depth + 1)}`;
+  },
+  removed:(node, depth) => {
+   return `\n${getIndent(depth)}- ${node.key}: ${stringify(node.oldValue, depth + 1)}`;
+  },
+};
 
 const render = (nodes) => {
   return renderIter(nodes);
