@@ -8,39 +8,28 @@ const stringify = (value) => {
   return _.isString(value) ? `'${value}'` : value;
 };
 
-const renderIter = (node, nameKey) => {
-  const currentKey = `${nameKey}${node.key}`;
-  const renderFunc = renderFuncs[node.type];
-  if(typeof renderFunc === 'undefined') {
-    throw new Error(`unexpected type ${node.type}`);
-  }
-  return renderFunc(node, currentKey);   
-}; 
-
-const renderFuncs = {
-  nested: (node, currentKey) => {
-    return node.children.map((child) => renderIter(child, `${currentKey}.`)).join('');
-  },
-  
-  // eslint-disable-next-line no-unused-vars
-  unchanged:(_node, _currentKey) => {
-    return '';
-  },
-  changed:(node, currentKey) => {
-    return `Property '${currentKey}' was updated. From ${stringify(node.oldValue)} to ${stringify(node.newValue)}\n`;
-  },
-  added:(node, currentKey) => {
-    return `Property '${currentKey}' was added with value: ${stringify(node.newValue)}\n`;
-  },
-  removed:(_node, currentKey) => {
-    return `Property '${currentKey}' was removed\n`;
-  },
-};
-
 const render = (nodes) => {
-  return renderIter(nodes, '');
+  const iter = (node, nameKey) => {
+    const currentKey = `${nameKey}${node.key}`;
+    switch (node.type) {
+      case 'nested':
+        return node.children.map((child) => iter(child, `${currentKey}.`)).join('');
+      case 'unchanged':
+        return '';
+      case 'changed':
+        return `Property '${currentKey}' was updated. From ${stringify(node.oldValue)} to ${stringify(node.newValue)}\n`;
+      case 'added':
+        return `Property '${currentKey}' was added with value: ${stringify(node.newValue)}\n`;
+      case 'removed':
+        return `Property '${currentKey}' was removed\n`;
+      default:
+        throw new Error(`unexpected type ${node.type}`);
+    }
+  };
+
+  return iter(nodes, '');
 };
-  
+
 const plain = (nodes) => {
   const lines = nodes.map((node) => render(node));
   return lines.join('').trim();

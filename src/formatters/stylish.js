@@ -15,34 +15,25 @@ const stringify = (value, depth) => {
   return `{\n${result.join('')}${getIndent(depth - 1)}  }`;
 };
 
-const renderIter = (node, depth = 1) => {
-  const renderFunc = renderFuncs[node.type];
-  if(typeof renderFunc === 'undefined') {
-    throw new Error(`unexpected type ${node.type}`);
-  }
-  return renderFunc(node, depth);   
-}; 
-
-const renderFuncs = {
-  nested:(node, depth) => {
-  return `\n${getIndent(depth)}  ${node.key}: {${node.children.map((child) => renderIter(child, depth + 1)).join('')}\n${getIndent(depth)}  }`;
-  },
-  unchanged:(node, depth) => {
-  return `\n${getIndent(depth)}  ${node.key}: ${stringify(node.oldValue, depth + 1)}`;
-  },
-  changed:(node, depth) => {
-  return `\n${getIndent(depth)}- ${node.key}: ${stringify(node.oldValue, depth + 1)}\n${getIndent(depth)}+ ${node.key}: ${stringify(node.newValue, depth + 1)}`;
-  },
-  added:(node, depth) => {
-  return `\n${getIndent(depth)}+ ${node.key}: ${stringify(node.newValue, depth + 1)}`;
-  },
-  removed:(node, depth) => {
-   return `\n${getIndent(depth)}- ${node.key}: ${stringify(node.oldValue, depth + 1)}`;
-  },
-};
-
 const render = (nodes) => {
-  return renderIter(nodes);
+  const iter = (node, depth = 1) => {
+    switch (node.type) {
+      case 'nested':
+        return `\n${getIndent(depth)}  ${node.key}: {${node.children.map((child) => iter(child, depth + 1)).join('')}\n${getIndent(depth)}  }`;
+      case 'unchanged':
+        return `\n${getIndent(depth)}  ${node.key}: ${stringify(node.oldValue, depth + 1)}`;
+      case 'changed':
+        return `\n${getIndent(depth)}- ${node.key}: ${stringify(node.oldValue, depth + 1)}\n${getIndent(depth)}+ ${node.key}: ${stringify(node.newValue, depth + 1)}`;
+      case 'added':
+        return `\n${getIndent(depth)}+ ${node.key}: ${stringify(node.newValue, depth + 1)}`;
+      case 'removed':
+        return `\n${getIndent(depth)}- ${node.key}: ${stringify(node.oldValue, depth + 1)}`;
+      default:
+        throw new Error(`unexpected type ${node.type}`);
+    }
+  };
+
+  return iter(nodes);
 };
 
 const stylish = (nodes) => {
